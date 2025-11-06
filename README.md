@@ -4,8 +4,7 @@ A modern web application for finding healthcare specialists in rural areas with 
 
 ## 🚀 Live Demo
 
-[**View Live Site →**](https://vathsa1820.github.io/Rural-Mind-Connect./)
-
+[**View Live Site →**]( https://chaithrarkaval99-debug.github.io/healthvia/)
 ## ✨ Features
 
 ### 🔍 Smart Specialist Discovery
@@ -84,7 +83,7 @@ Works perfectly on:
 
 ## 🚀 Quick Start
 
-No installation required! Simply visit the [live site](https://vathsa1820.github.io/Rural-Mind-Connect./) and start exploring healthcare options.
+No installation required! Simply visit the [live site]( https://chaithrarkaval99-debug.github.io/healthvia/) and start exploring healthcare options.
 
 ## 📞 Support
 
