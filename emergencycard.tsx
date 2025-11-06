@@ -1,132 +1,59 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Phone, AlertTriangle, MapPin } from 'lucide-react';
+import { toast } from 'sonner';
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+export function EmergencyCard() {
+  const handleEmergencyCall = () => {
+    toast.error('For immediate medical assistance, call 911 or your local emergency number', {
+      duration: 5000,
+    });
+    // In a real app, this could integrate with the device's phone dialer
+  };
 
-@layer base {
-  :root {
-    --background: 210 40% 98%;
-    --foreground: 210 40% 12%;
+  const emergencyContacts = [
+    { name: 'Emergency Services', number: '911', icon: AlertTriangle },
+    { name: 'Poison Control', number: '1-800-222-1222', icon: Phone },
+    { name: 'Mental Health Crisis', number: '988', icon: Phone },
+  ];
 
-    --card: 0 0% 100%;
-    --card-foreground: 210 40% 12%;
+  return (
+    <Card className="p-6 shadow-lg border-2 border-destructive/20 bg-gradient-to-br from-destructive/5 to-background">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
+          <AlertTriangle className="w-6 h-6 text-destructive" />
+        </div>
+        <div>
+          <h2 className="text-xl font-bold text-foreground">Emergency Contacts</h2>
+          <p className="text-sm text-muted-foreground">For urgent medical assistance</p>
+        </div>
+      </div>
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 210 40% 12%;
+      <div className="space-y-3">
+        {emergencyContacts.map((contact) => (
+          <Button
+            key={contact.name}
+            variant="outline"
+            className="w-full justify-start h-auto py-4 px-4 border-destructive/30 hover:bg-destructive/10 hover:border-destructive"
+            onClick={handleEmergencyCall}
+          >
+            <contact.icon className="w-5 h-5 mr-3 text-destructive flex-shrink-0" />
+            <div className="flex-1 text-left">
+              <div className="font-semibold text-foreground">{contact.name}</div>
+              <div className="text-sm text-muted-foreground">{contact.number}</div>
+            </div>
+          </Button>
+        ))}
+      </div>
 
-    --primary: 195 85% 45%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 195 85% 95%;
-    --secondary-foreground: 195 85% 20%;
-
-    --muted: 210 40% 96%;
-    --muted-foreground: 210 40% 45%;
-
-    --accent: 168 76% 42%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 195 85% 45%;
-
-    --radius: 0.75rem;
-    
-    --emergency: 0 84% 50%;
-    --success: 142 76% 36%;
-    
-    --gradient-primary: linear-gradient(135deg, hsl(195 85% 45%), hsl(168 76% 42%));
-    --gradient-subtle: linear-gradient(180deg, hsl(210 40% 98%), hsl(195 85% 97%));
-    
-    --shadow-sm: 0 2px 8px -2px hsl(195 85% 45% / 0.1);
-    --shadow-md: 0 8px 24px -6px hsl(195 85% 45% / 0.15);
-    --shadow-lg: 0 16px 48px -12px hsl(195 85% 45% / 0.2);
-    
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 210 40% 8%;
-    --foreground: 210 40% 98%;
-
-    --card: 210 40% 12%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 210 40% 12%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 195 85% 55%;
-    --primary-foreground: 210 40% 8%;
-
-    --secondary: 210 40% 18%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 210 40% 18%;
-    --muted-foreground: 210 40% 65%;
-
-    --accent: 168 76% 52%;
-    --accent-foreground: 210 40% 8%;
-
-    --destructive: 0 84% 50%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 210 40% 20%;
-    --input: 210 40% 20%;
-    --ring: 195 85% 55%;
-    
-    --emergency: 0 84% 60%;
-    --success: 142 76% 46%;
-    
-    --gradient-primary: linear-gradient(135deg, hsl(195 85% 55%), hsl(168 76% 52%));
-    --gradient-subtle: linear-gradient(180deg, hsl(210 40% 8%), hsl(210 40% 12%));
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
-@layer utilities {
-  .delay-100 {
-    animation-delay: 100ms;
-  }
-  .delay-200 {
-    animation-delay: 200ms;
-  }
+      <div className="mt-4 p-3 bg-muted rounded-lg">
+        <div className="flex items-start gap-2">
+          <MapPin className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+          <p className="text-xs text-muted-foreground">
+            In case of emergency, always call your local emergency services immediately. This app is for informational purposes only.
+          </p>
+        </div>
+      </div>
+    </Card>
+  );
 }
