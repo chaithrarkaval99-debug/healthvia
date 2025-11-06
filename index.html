@@ -1883,11 +1883,14 @@ ALTER TABLE public.feedback ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.video_consultations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
-<button onclick="window.location.href='doctor.html'">Find Doctor</button>
-<button onclick="window.location.href='medicine.html'">Order Medicine</button>
-<button onclick="window.location.href='video.html'">Video Consultation</button>
-<button onclick="window.location.href='mental.html'">Mental Health Support</button>
+<h2>Order Medicine</h2>
+<input type="text" placeholder="Enter medicine name" id="med">
+<button onclick="placeOrder()">Place Order</button>
 
+<script>
+function placeOrder() {
+  const med = document.getElementById('med').value;
+  if (med.trim() === "")
 -- RLS Policies for doctors (public read)
 CREATE POLICY \
         
