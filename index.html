@@ -1,266 +1,602 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RuralMind Connect | Healthcare Platform</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-/* Keep your same styles */
-body {
-  font-family: "Inter", sans-serif;
-  background: #f5f7fa;
-  margin: 0;
-  padding: 0;
-  color: #333;
-}
-header {
-  text-align: center;
-  padding: 20px;
-}
-.container {
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
-}
-button {
-  background-color: #2c5aa0;
-  color: #fff;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-button:hover {
-  background-color: #4a90e2;
-}
-.feature-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  margin: 10px 0;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-  cursor: pointer;
-}
-.modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
-  justify-content: center;
-  align-items: center;
-}
-.modal-content {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 400px;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-.close-btn {
-  float: right;
-  cursor: pointer;
-  font-size: 20px;
-  color: #999;
-}
-.chat-container {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  height: 200px;
-  overflow-y: auto;
-  padding: 10px;
-  background: #fafafa;
-}
-.chat-input {
-  display: flex;
-  gap: 5px;
-}
-.chat-input input {
-  flex: 1;
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-.breathing-circle {
-  width: 120px;
-  height: 120px;
-  background-color: #d0e4ff;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 20px auto;
-  font-weight: bold;
-  transition: transform 4s ease-in-out;
-}
-</style>
-</head>
-<body>
+# Project: Healthcare Platform — Fullstack Starter
 
-<header>
-  <h1>RuralMind Connect</h1>
-  <p>Your trusted partner in rural healthcare</p>
-</header>
+This single-file code document contains a full-stack starter project scaffold for the features you requested. Files are separated with clear headings (/// FILE: path). Copy each file into a project folder structure as shown and follow the README to run locally.
 
-<div class="container">
-  <div class="feature-card" onclick="openModal('doctorModal')">
-    <i class="fas fa-stethoscope"></i> Find Doctor
-  </div>
+---
 
-  <div class="feature-card" onclick="openModal('medicineModal')">
-    <i class="fas fa-pills"></i> Order Medicine
-  </div>
+/// FILE: README.md
+# Healthcare Platform — Fullstack Starter
 
-  <div class="feature-card" onclick="openModal('chatModal')">
-    <i class="fas fa-comments"></i> Community Chat
-  </div>
+A minimal full-stack starter implementing core features:
+- Find Doctor (search + booking)
+- Order Medicine (prescription upload)
+- Healthy Library (articles)
+- Community Chat (Socket.io)
+- Mental Wellness (resources)
+- Night Care (simple chatbot)
+- Video Consultation (WebRTC + Socket.io signaling)
+- Feedback form
 
-  <div class="feature-card" onclick="openModal('wellnessModal')">
-    <i class="fas fa-smile"></i> Mental Wellness
-  </div>
+This is intentionally a developer-friendly scaffold: production hardening (DB, auth, HTTPS, storage) is **required** for real deployment.
 
-  <div class="feature-card" onclick="openModal('libraryModal')">
-    <i class="fas fa-book-medical"></i> Health Library
-  </div>
-</div>
+## Stack
+- Backend: Node.js, Express, Socket.io
+- Frontend: React (Vite), TailwindCSS
+- Storage: In-memory for demo (replace with Mongo/Postgres in prod)
 
-<!-- Doctor Booking Modal -->
-<div id="doctorModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeModal('doctorModal')">&times;</span>
-    <h3>Book a Doctor Appointment</h3>
-    <select id="doctorSelect">
-      <option value="">Select Doctor</option>
-      <option>Dr. Meera (General)</option>
-      <option>Dr. Anil (Cardiologist)</option>
-      <option>Dr. Riya (Psychologist)</option>
-    </select>
-    <input type="date" id="appointmentDate">
-    <button onclick="bookDoctor()">Book Appointment</button>
-  </div>
-</div>
+## Run (dev)
+1. Ensure Node 18+ and npm installed.
+2. In project root run:
+```bash
+# install backend
+cd backend
+npm install
+# install frontend
+cd ../frontend
+npm install
+```
+3. Start both servers (two terminals):
+```bash
+# terminal 1
+cd backend
+npm run dev
 
-<!-- Medicine Order Modal -->
-<div id="medicineModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeModal('medicineModal')">&times;</span>
-    <h3>Order Medicines</h3>
-    <input type="text" id="medicineName" placeholder="Enter medicine name">
-    <input type="number" id="medicineQty" placeholder="Quantity">
-    <button onclick="orderMedicine()">Place Order</button>
-  </div>
-</div>
+# terminal 2
+cd frontend
+npm run dev
+```
+4. Open http://localhost:5173 (frontend) — backend runs on http://localhost:4000
 
-<!-- Community Chat Modal -->
-<div id="chatModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeModal('chatModal')">&times;</span>
-    <h3>Community Chat</h3>
-    <div class="chat-container" id="chatBox"></div>
-    <div class="chat-input">
-      <input type="text" id="chatMessage" placeholder="Type message...">
-      <button onclick="sendChat()">Send</button>
-    </div>
-  </div>
-</div>
+---
 
-<!-- Mental Wellness Modal -->
-<div id="wellnessModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeModal('wellnessModal')">&times;</span>
-    <h3>Breathing Exercise</h3>
-    <div class="breathing-circle" id="breatheCircle">Inhale</div>
-    <button onclick="startBreathing()">Start Exercise</button>
-  </div>
-</div>
-
-<!-- Health Library Modal -->
-<div id="libraryModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeModal('libraryModal')">&times;</span>
-    <h3>Health Articles</h3>
-    <ul>
-      <li>🌿 5 Tips for Better Mental Health</li>
-      <li>💧 Importance of Staying Hydrated</li>
-      <li>🏃‍♀️ Daily Exercise Routines</li>
-      <li>🍎 Nutrition for a Healthy Heart</li>
-    </ul>
-  </div>
-</div>
-
-<script>
-// Modal control
-function openModal(id) {
-  document.getElementById(id).style.display = 'flex';
-}
-function closeModal(id) {
-  document.getElementById(id).style.display = 'none';
-}
-
-// Doctor booking
-function bookDoctor() {
-  const doctor = document.getElementById('doctorSelect').value;
-  const date = document.getElementById('appointmentDate').value;
-  if (!doctor || !date) {
-    alert('Please select doctor and date');
-  } else {
-    alert(`Appointment booked with ${doctor} on ${date}`);
-    closeModal('doctorModal');
+/// FILE: backend/package.json
+{
+  "name": "health-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "socket.io": "^4.7.2",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }
 
-// Medicine order
-function orderMedicine() {
-  const name = document.getElementById('medicineName').value;
-  const qty = document.getElementById('medicineQty').value;
-  if (!name || qty <= 0) {
-    alert('Please add at least one medicine to your order.');
-  } else {
-    alert(`Your order for ${qty} ${name}(s) has been placed successfully!`);
-    closeModal('medicineModal');
+---
+
+/// FILE: backend/index.js
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+const cors = require('cors');
+const multer = require('multer');
+const path = require('path');
+const { v4: uuidv4 } = require('uuid');
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: '*' } });
+
+app.use(express.json());
+app.use(cors());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// In-memory stores (demo only)
+const doctors = [
+  { id: 'd1', name: 'Dr. Ananya Gupta', speciality: 'General Physician', location: 'Delhi', rating: 4.6 },
+  { id: 'd2', name: 'Dr. Rohit Sharma', speciality: 'Psychiatrist', location: 'Mumbai', rating: 4.8 },
+  { id: 'd3', name: 'Dr. Saira Khan', speciality: 'Pediatrics', location: 'Bengaluru', rating: 4.5 }
+];
+
+const bookings = [];
+const medicines = [
+  { id: 'm1', name: 'Paracetamol', price: 20 },
+  { id: 'm2', name: 'Amoxicillin', price: 150 },
+  { id: 'm3', name: 'Vitamin C', price: 50 }
+];
+const orders = [];
+const articles = [
+  { id: 'a1', title: 'Healthy Eating 101', summary: 'Basics of balanced diet', content: 'Eat whole grains, proteins...' },
+  { id: 'a2', title: 'Managing Anxiety', summary: 'Practical tips', content: 'Breathe, routine, therapy...' }
+];
+const feedbacks = [];
+
+// Multer for prescription uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, 'uploads'));
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+const upload = multer({ storage });
+
+// API routes
+app.get('/api/doctors', (req, res) => {
+  const q = (req.query.q || '').toLowerCase();
+  const speciality = (req.query.speciality || '').toLowerCase();
+  let result = doctors;
+  if (q) result = result.filter(d => d.name.toLowerCase().includes(q) || d.location.toLowerCase().includes(q));
+  if (speciality) result = result.filter(d => d.speciality.toLowerCase().includes(speciality));
+  res.json(result);
+});
+
+app.post('/api/book', (req, res) => {
+  const { doctorId, userName, time } = req.body;
+  const id = uuidv4();
+  bookings.push({ id, doctorId, userName, time });
+  res.json({ success: true, id });
+});
+
+app.get('/api/medicines', (req, res) => res.json(medicines));
+
+app.post('/api/order', upload.single('prescription'), (req, res) => {
+  const { items, userName, address } = req.body;
+  const id = uuidv4();
+  const prescriptionUrl = req.file ? `/uploads/${req.file.filename}` : null;
+  orders.push({ id, items: JSON.parse(items), userName, address, prescriptionUrl, status: 'processing' });
+  res.json({ success: true, id });
+});
+
+app.get('/api/articles', (req, res) => res.json(articles));
+app.post('/api/feedback', (req, res) => { feedbacks.push(req.body); res.json({ success: true }); });
+
+// Simple chatbot for Night Care — rule-based
+app.post('/api/chatbot', (req, res) => {
+  const { message } = req.body;
+  const text = (message || '').toLowerCase();
+  if (text.includes('emergency') || text.includes('bleeding') || text.includes('heart')) {
+    return res.json({ reply: 'If this is a medical emergency, call your local emergency number immediately. Meanwhile, stay calm and apply first aid if trained.' });
+  }
+  if (text.includes('sleep') || text.includes('insomnia')) {
+    return res.json({ reply: 'Try a wind-down routine: reduce screens 1 hour before bed, warm drink, and deep breathing. If persistent, consult a doctor.' });
+  }
+  return res.json({ reply: 'I can help with basic health tips. For consultations, book a doctor or use video consult.' });
+});
+
+// Socket.io for community chat & WebRTC signaling
+io.on('connection', (socket) => {
+  console.log('socket connected', socket.id);
+
+  // community messages
+  socket.on('community:message', (msg) => {
+    io.emit('community:message', { ...msg, id: uuidv4(), ts: Date.now() });
+  });
+
+  // simple signaling for WebRTC
+  socket.on('signal', (data) => {
+    // data: { to, from, signal }
+    io.to(data.to).emit('signal', data);
+  });
+
+  socket.on('disconnect', () => console.log('socket disconnected', socket.id));
+});
+
+const PORT = process.env.PORT || 4000;
+server.listen(PORT, () => console.log(`Backend listening on ${PORT}`));
+
+---
+
+/// FILE: frontend/package.json
+{
+  "name": "health-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "socket.io-client": "^4.7.2",
+    "axios": "^1.4.0",
+    "tailwindcss": "^3.4.0",
+    "react-router-dom": "^6.14.1"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   }
 }
 
-// Chat system
-function sendChat() {
-  const msg = document.getElementById('chatMessage').value.trim();
-  if (msg === "") return;
-  const chatBox = document.getElementById('chatBox');
-  const div = document.createElement('div');
-  div.textContent = "You: " + msg;
-  chatBox.appendChild(div);
-  document.getElementById('chatMessage').value = "";
-  chatBox.scrollTop = chatBox.scrollHeight;
-  // Simple bot reply
-  setTimeout(() => {
-    const reply = document.createElement('div');
-    reply.textContent = "Doctor Bot: Stay positive and hydrated!";
-    chatBox.appendChild(reply);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }, 1000);
-}
+---
 
-// Breathing exercise
-function startBreathing() {
-  const circle = document.getElementById('breatheCircle');
-  let phase = 'inhale';
-  setInterval(() => {
-    if (phase === 'inhale') {
-      circle.style.transform = 'scale(1.5)';
-      circle.textContent = 'Exhale';
-      phase = 'exhale';
-    } else {
-      circle.style.transform = 'scale(1)';
-      circle.textContent = 'Inhale';
-      phase = 'inhale';
-    }
-  }, 4000);
-}
-</script>
-
-</body>
+/// FILE: frontend/index.html
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Health Platform</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
+
+---
+
+/// FILE: frontend/src/main.jsx
+import React from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import App from './pages/App'
+import './styles.css'
+
+createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/*" element={<App/>} />
+      </Routes>
+    </BrowserRouter>
+  </React.StrictMode>
+)
+
+---
+
+/// FILE: frontend/src/pages/App.jsx
+import React from 'react'
+import Home from './Home'
+import FindDoctor from './FindDoctor'
+import Medicines from './Medicines'
+import Library from './Library'
+import Community from './Community'
+import VideoConsult from './VideoConsult'
+import Feedback from './Feedback'
+
+export default function App(){
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white shadow px-6 py-4 flex justify-between items-center">
+        <h1 className="text-xl font-bold">CareConnect</h1>
+        <nav className="space-x-4">
+          <a href="#/" className="hover:underline">Home</a>
+          <a href="#/find-doctor" className="hover:underline">Find Doctor</a>
+          <a href="#/medicines" className="hover:underline">Order Medicine</a>
+          <a href="#/library" className="hover:underline">Healthy Library</a>
+          <a href="#/community" className="hover:underline">Community</a>
+          <a href="#/video" className="hover:underline">Video Consult</a>
+          <a href="#/feedback" className="hover:underline">Feedback</a>
+        </nav>
+      </header>
+      <main className="p-6">
+        <Home />
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FindDoctor />
+          <Medicines />
+          <Library />
+          <Community />
+          <VideoConsult />
+          <Feedback />
+        </div>
+      </main>
+    </div>
+  )
+}
+
+---
+
+/// FILE: frontend/src/pages/Home.jsx
+import React from 'react'
+export default function Home(){
+  return (
+    <section className="bg-white p-6 rounded shadow">
+      <h2 className="text-2xl font-semibold">Welcome to CareConnect</h2>
+      <p className="mt-2 text-gray-700">Find doctors, order medicines, join the community, and get 24/7 support.</p>
+    </section>
+  )
+}
+
+---
+
+/// FILE: frontend/src/pages/FindDoctor.jsx
+import React, {useState, useEffect} from 'react'
+import axios from 'axios'
+
+export default function FindDoctor(){
+  const [q, setQ] = useState('')
+  const [doctors, setDoctors] = useState([])
+  const [name, setName] = useState('')
+  const [selected, setSelected] = useState(null)
+
+  useEffect(()=>{ fetchDoctors() },[])
+  async function fetchDoctors(){
+    const res = await axios.get('http://localhost:4000/api/doctors')
+    setDoctors(res.data)
+  }
+  async function search(){
+    const res = await axios.get('http://localhost:4000/api/doctors?q='+encodeURIComponent(q))
+    setDoctors(res.data)
+  }
+  async function book(){
+    if(!selected) return alert('Select a doctor to book')
+    await axios.post('http://localhost:4000/api/book', { doctorId: selected.id, userName: name, time: new Date().toISOString() })
+    alert('Booked!')
+  }
+
+  return (
+    <div className="bg-white p-4 rounded shadow">
+      <h3 className="font-semibold">Find Doctor</h3>
+      <div className="mt-2">
+        <input value={q} onChange={e=>setQ(e.target.value)} placeholder="search by name or location" className="border p-2 mr-2" />
+        <button onClick={search} className="btn">Search</button>
+      </div>
+      <ul className="mt-3 space-y-2 max-h-48 overflow-auto">
+        {doctors.map(d=> (
+          <li key={d.id} className={`p-2 border rounded cursor-pointer ${selected?.id===d.id? 'bg-indigo-50': ''}`} onClick={()=>setSelected(d)}>
+            <div className="flex justify-between"><div>{d.name} <span className="text-sm text-gray-500">({d.speciality})</span></div><div>{d.rating}★</div></div>
+            <div className="text-sm text-gray-600">{d.location}</div>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-3">
+        <input value={name} onChange={e=>setName(e.target.value)} placeholder="your name" className="border p-2 mr-2" />
+        <button onClick={book} className="btn">Book Appointment</button>
+      </div>
+    </div>
+  )
+}
+
+---
+
+/// FILE: frontend/src/pages/Medicines.jsx
+import React, {useState, useEffect} from 'react'
+import axios from 'axios'
+
+export default function Medicines(){
+  const [meds, setMeds] = useState([])
+  const [cart, setCart] = useState([])
+  const [name, setName] = useState('')
+  const [address, setAddress] = useState('')
+  const [prescription, setPrescription] = useState(null)
+
+  useEffect(()=>{ axios.get('http://localhost:4000/api/medicines').then(r=>setMeds(r.data)) },[])
+
+  function add(m){ setCart(prev=>[...prev,m]) }
+  async function order(){
+    if(!name || !address) return alert('enter details')
+    const fd = new FormData();
+    fd.append('items', JSON.stringify(cart.map(c=>c.id)));
+    fd.append('userName', name);
+    fd.append('address', address);
+    if(prescription) fd.append('prescription', prescription);
+    await axios.post('http://localhost:4000/api/order', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
+    alert('Order placed')
+    setCart([])
+  }
+
+  return (
+    <div className="bg-white p-4 rounded shadow">
+      <h3 className="font-semibold">Order Medicine</h3>
+      <div className="grid grid-cols-2 gap-2 mt-2">
+        {meds.map(m=> (
+          <div key={m.id} className="p-2 border rounded">
+            <div className="font-medium">{m.name}</div>
+            <div className="text-sm">₹{m.price}</div>
+            <button onClick={()=>add(m)} className="mt-2 btn">Add</button>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3">
+        <h4 className="font-medium">Cart</h4>
+        <div>{cart.map(c=>c.name).join(', ') || 'Empty'}</div>
+        <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" className="border p-2 mr-2 mt-2" />
+        <input value={address} onChange={e=>setAddress(e.target.value)} placeholder="Address" className="border p-2 mt-2" />
+        <div className="mt-2">
+          <label className="block">Upload prescription (optional)</label>
+          <input type="file" onChange={e=>setPrescription(e.target.files[0])} />
+        </div>
+        <button onClick={order} className="mt-2 btn">Place Order</button>
+      </div>
+    </div>
+  )
+}
+
+---
+
+/// FILE: frontend/src/pages/Library.jsx
+import React, {useEffect, useState} from 'react'
+import axios from 'axios'
+
+export default function Library(){
+  const [articles, setArticles] = useState([])
+  useEffect(()=>{ axios.get('http://localhost:4000/api/articles').then(r=>setArticles(r.data)) },[])
+  return (
+    <div className="bg-white p-4 rounded shadow">
+      <h3 className="font-semibold">Healthy Library</h3>
+      <ul className="mt-2 space-y-2">
+        {articles.map(a=> (
+          <li key={a.id} className="border p-2 rounded">
+            <div className="font-medium">{a.title}</div>
+            <div className="text-sm text-gray-600">{a.summary}</div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+---
+
+/// FILE: frontend/src/pages/Community.jsx
+import React,{useState,useEffect} from 'react'
+import { io } from 'socket.io-client'
+
+const socket = io('http://localhost:4000')
+
+export default function Community(){
+  const [msg, setMsg] = useState('')
+  const [feed, setFeed] = useState([])
+
+  useEffect(()=>{
+    socket.on('community:message', (m)=> setFeed(prev=>[m,...prev]))
+    return ()=> socket.off('community:message')
+  },[])
+
+  function send(){
+    if(!msg) return
+    socket.emit('community:message', { user: 'Guest', text: msg })
+    setMsg('')
+  }
+
+  return (
+    <div className="bg-white p-4 rounded shadow">
+      <h3 className="font-semibold">Community Chat</h3>
+      <div className="mt-2">
+        <input value={msg} onChange={e=>setMsg(e.target.value)} className="border p-2 mr-2" placeholder="Say something" />
+        <button onClick={send} className="btn">Send</button>
+      </div>
+      <div className="mt-3 max-h-48 overflow-auto space-y-2">
+        {feed.map(m=> (
+          <div key={m.id} className="p-2 border rounded">
+            <div className="text-sm font-medium">{m.user}</div>
+            <div className="text-sm">{m.text}</div>
+            <div className="text-xs text-gray-400">{new Date(m.ts).toLocaleString()}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+---
+
+/// FILE: frontend/src/pages/VideoConsult.jsx
+import React, {useRef, useEffect, useState} from 'react'
+import { io } from 'socket.io-client'
+
+const socket = io('http://localhost:4000')
+
+export default function VideoConsult(){
+  const localRef = useRef();
+  const remoteRef = useRef();
+  const pcRef = useRef();
+  const [connectedId, setConnectedId] = useState(null)
+
+  useEffect(()=>{
+    socket.on('signal', async (data)=>{
+      if(data.signal.type === 'offer'){
+        await createPeer(false, data.from, data.signal)
+      } else if(data.signal.type === 'answer'){
+        await pcRef.current.setRemoteDescription(new RTCSessionDescription(data.signal))
+      } else if(data.signal.candidate){
+        try{ await pcRef.current.addIceCandidate(data.signal) }catch(e){ console.error(e) }
+      }
+    })
+  },[])
+
+  async function createPeer(initiator, peerId, offer){
+    pcRef.current = new RTCPeerConnection();
+    pcRef.current.onicecandidate = e=>{ if(e.candidate) socket.emit('signal', { to: peerId, from: socket.id, signal: e.candidate }) }
+    pcRef.current.ontrack = e=> remoteRef.current.srcObject = e.streams[0]
+
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    localRef.current.srcObject = stream
+    stream.getTracks().forEach(t=>pcRef.current.addTrack(t, stream))
+
+    if(initiator){
+      const offerDesc = await pcRef.current.createOffer();
+      await pcRef.current.setLocalDescription(offerDesc)
+      socket.emit('signal', { to: peerId, from: socket.id, signal: offerDesc })
+    } else {
+      await pcRef.current.setRemoteDescription(new RTCSessionDescription(offer))
+      const answer = await pcRef.current.createAnswer();
+      await pcRef.current.setLocalDescription(answer)
+      socket.emit('signal', { to: peerId, from: socket.id, signal: answer })
+    }
+  }
+
+  function call(){
+    const peer = prompt('Enter doctor socket id (for demo use any other connected client id)')
+    if(!peer) return
+    setConnectedId(peer)
+    createPeer(true, peer)
+  }
+
+  return (
+    <div className="bg-white p-4 rounded shadow">
+      <h3 className="font-semibold">Video Consultation (Demo)</h3>
+      <div className="mt-2 flex gap-2">
+        <video ref={localRef} autoPlay playsInline muted className="w-1/2 border" />
+        <video ref={remoteRef} autoPlay playsInline className="w-1/2 border" />
+      </div>
+      <div className="mt-2">
+        <button onClick={call} className="btn">Start Call (demo)</button>
+      </div>
+      <p className="text-xs text-gray-500 mt-2">Note: This is a demo WebRTC flow using Socket.io signaling. For production use STUN/TURN and authenticated signaling.</p>
+    </div>
+  )
+}
+
+---
+
+/// FILE: frontend/src/pages/Feedback.jsx
+import React, {useState} from 'react'
+import axios from 'axios'
+
+export default function Feedback(){
+  const [text, setText] = useState('')
+  const [rating, setRating] = useState(5)
+  async function submit(){
+    await axios.post('http://localhost:4000/api/feedback', { text, rating })
+    alert('Thanks for feedback')
+    setText('')
+  }
+  return (
+    <div className="bg-white p-4 rounded shadow">
+      <h3 className="font-semibold">Feedback</h3>
+      <textarea value={text} onChange={e=>setText(e.target.value)} className="w-full border p-2 mt-2" placeholder="Tell us what you think"></textarea>
+      <div className="mt-2">Rating: <input type="range" min="1" max="5" value={rating} onChange={e=>setRating(e.target.value)} /></div>
+      <button onClick={submit} className="mt-2 btn">Submit</button>
+    </div>
+  )
+}
+
+---
+
+/// FILE: frontend/src/styles.css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{ font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial }
+
+.btn{ @apply bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 }
+
+/* simple responsive grid fallback */
+
+---
+
+/// FILE: frontend/tailwind.config.cjs
+module.exports = {
+  content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
+  theme: { extend: {} },
+  plugins: []
+}
+
+---
+
+## Notes & Next Steps
+- This is a demo scaffold. For production:
+  - Replace in-memory stores with a real DB (Mongo/Postgres).
+  - Add user authentication and roles (patients, doctors, admins).
+  - Secure file storage (S3) and use HTTPS.
+  - Add input validation and rate-limiting.
+  - Use STUN/TURN for reliable WebRTC and authenticated signaling.
+  - Add tests and CI/CD.
+
+---
+
+Thank you! Copy the files into folders `backend/` and `frontend/` and run the steps in README.md. Good luck — I can help deploy, add authentication, or convert this into a Docker compose if you'd like.
